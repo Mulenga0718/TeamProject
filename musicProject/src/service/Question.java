@@ -247,11 +247,11 @@ public class Question {
 
 	public int faqanswer() {
 		System.out.println("몇번을 선택하시겠습니까 > ");
-		int result = ScanUtil.nextInt();
+		int result = ScanUtil.nextInt()-1;
 		List<Map<String, Object>> list = boardDao.selectFAQ();
-		System.out.println("질문 번호 : " + list.get(result).get("F_NO"));
-		System.out.println("질문 : " + list.get(result).get("F_CONTENT"));
-		System.out.println("답변 : " + list.get(result).get("F_ANSWER"));
+		System.out.println("질문 번호 : " + list.get(result).get("FQ_NO"));
+		System.out.println("질문 : " + list.get(result).get("FQ_CONTENT"));
+		System.out.println("답변 : " + list.get(result).get("FQ_ANSWER"));
 
 		System.out.println("(1) 뒤로가기 (2)홈으로 이동");
 		result = ScanUtil.nextInt();
