@@ -55,7 +55,6 @@ public class Controller {
 		case 7: return View.QUESTIONBOARD; 
 		case 0: System.out.println("프로그램이 종료되었습니다.");
 		System.exit(0);
-		
 		}
 		return View.Home;
 	}
