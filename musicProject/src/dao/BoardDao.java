@@ -26,35 +26,38 @@ public class BoardDao {
 		param.add((String)Login.loginMember.get("ID"));
 		param.add(title);
 		param.add(content);
-		
-		return JDBCUtil.update(sql, param); 
+		String sql1 = "INSERT INTO TB_ANSWER(Q_NO) VALUES((SELECT NVL(MAX(Q_NO), 0) + 1 FROM TB_ANSWER))";
+		 JDBCUtil.update(sql, param);
+		return JDBCUtil.update(sql1);
 	}
-	public Map<String, Object> selectQuestion(String id){
+	public List<Map<String, Object>> selectQuestion(){
 		String sql = "select Q_NO,"
 				+ "          ID,"
 				+ "   		 Q_NAME,"
 				+ " 		 Q_CONTENT,"
 				+ "			 TO_CHAR(Q_DATE, 'YYYY-MM-DD HH24:MI') AS QUESTIONDATE"
-				+ " from TB_QUESTION WHERE ID = ?";
+				+ " from TB_QUESTION WHERE ID = ?"
+				+ " order by 1 desc ";
 		List<Object> param = new ArrayList<Object>();
 		param.add((String)Login.loginMember.get("ID")); //아이디
-		return JDBCUtil.selectOne(sql, param);
+		return JDBCUtil.selectList(sql, param);
 	}
-	public Map<String, Object> selectAnswer(String id){
+	public List<Map<String, Object>> selectAnswer(){
 		String sql = "select A.Q_NO "
 				+ "			,A.ID "
 				+ "			,A.Q_CONTENT"
 				+ "			,A.Q_NAME"
-				+ "			,TO_CHAR(A.Q_DATE, 'YYYY-MM-DD HH24:MI') "
+				+ "			,TO_CHAR(A.Q_DATE, 'YYYY-MM-DD HH24:MI')  "
 				+ "			,B.Q_ANSWER"
-				+ "			,TO_CHAR(B.Q_ADATE, 'YYYY-MM-DD HH24:MI') "
+				+ "			,TO_CHAR(B.Q_ADATE, 'YYYY-MM-DD HH24:MI') as ANSWERDATE "
 				+ "from TB_QUESTION A, TB_ANSWER B "
 				+ "where A.Q_NO = B.Q_NO "
-				+ "AND ID = ? ";
+				+ "AND ID = ? "
+				+ "ORDER BY 1 DESC ";
 		List<Object> param = new ArrayList<Object>();
 		param.add((String)Login.loginMember.get("ID"));
 		
-		return JDBCUtil.selectOne(sql, param);
+		return JDBCUtil.selectList(sql, param);
 	}
 	public List<Map<String, Object>> qustiononeadmin(){
 		String sql = "select Q_NO "
@@ -67,8 +70,8 @@ public class BoardDao {
 		
 	}
 	public int qadminanswer(List<Object> param) {
-		String sql = "INSERT INTO TB_ANSWER(Q_NO, Q_ANSWER) "
-				+ "					   VALUES(?, ?)  ";
+		String sql = "UPDATE TB_ANSWER SET Q_ANSWER = ? , Q_ADATE = SYSDATE  "
+				+ "				WHERE Q_NO = ? ";
 		
 		return JDBCUtil.update(sql, param);
 	}
@@ -81,7 +84,8 @@ public class BoardDao {
 				+ "			,TITLE"
 				+ "			,CONTENT"
 				+ "			,TO_CHAR(WRITEDATE, 'YYYY-MM-DD') AS WRITEDATE	"
-				+ " from TB_BOARD ";
+				+ " from TB_BOARD "
+				+ "ORDER BY ARTICLENO DESC ";
 		return JDBCUtil.selectList(sql);
 	}
 	public int noticeadd(String title, String content) {
@@ -100,7 +104,6 @@ public class BoardDao {
 		param.add(title);
 		param.add(content);
 		return JDBCUtil.update(sql, param);
-		
 		
 	}
 }
